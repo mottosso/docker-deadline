@@ -1,0 +1,25 @@
+mongo:
+  container_name: deadline-mongo
+  image: mongo
+  ports:
+    - "27017"
+
+deadline-slave1:
+  hostname: deadline-slave1
+  build: .
+  environment:
+    - DISPLAY=$HOSTNAME:0
+  links:
+    - mongo
+  volumes:
+    - deadline-volume:/mnt/DeadlineRepository8
+  entrypoint: ./deadlinelauncher
+
+deadline-slave2:
+  hostname: deadline-slave2
+  build: .
+  links:
+    - mongo
+  volumes:
+    - deadline-volume:/mnt/DeadlineRepository8
+  entrypoint: ./deadlinelauncher
