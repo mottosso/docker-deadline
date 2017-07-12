@@ -9,7 +9,6 @@ This project is based on the Running Deadline **8** in Docker [Part I](http://de
 - [Interactive Use](#interactive-use)
 - [Windows](windows)
 - [Deadline 9](#deadline-9)
-- [DCCs](#dccs)
 
 <br>
 
@@ -109,9 +108,3 @@ This project containerises Deadline 8 because of an issue with the client instal
 Error: An error occurred while trying to set the repository connection settings.
 You may have to provide them again when running the client.
 ```
-
-<br>
-
-### DDCs
-
-The vanilla set-up boots up two CentOS 7 distributions, but neither of them contain any relevant software.
