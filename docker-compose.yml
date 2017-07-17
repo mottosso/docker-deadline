@@ -1,3 +1,6 @@
+#
+# Run via up.sh
+#
 mongo:
   container_name: deadline-mongo
   image: mongo
@@ -5,21 +8,50 @@ mongo:
     - "27017"
 
 deadline-slave1:
-  hostname: deadline-slave1
-  build: .
+  container_name: deadline-slave1
+  hostname: maya-slave1
+  image: '${IMAGE}'
   environment:
     - DISPLAY=$HOSTNAME:0
   links:
     - mongo
   volumes:
     - deadline-volume:/mnt/DeadlineRepository8
+    - ${SHARE}:/share
   entrypoint: ./deadlinelauncher
 
 deadline-slave2:
-  hostname: deadline-slave2
-  build: .
+  container_name: deadline-slave2
+  hostname: maya-slave2
+  image: '${IMAGE}'
   links:
     - mongo
   volumes:
     - deadline-volume:/mnt/DeadlineRepository8
+    - ${SHARE}:/share
   entrypoint: ./deadlinelauncher
+
+# Expose REST API
+deadline-webservice:
+  container_name: deadline-webservice
+  hostname: deadline-webservice
+  image: '${IMAGE}'
+  ports:
+    - "8082:8082"
+  links:
+    - mongo
+  volumes:
+    - deadline-volume:/mnt/DeadlineRepository8
+  entrypoint: ./deadlinewebservice
+
+# Expose DeadlineRepository8 as a public network share
+deadline-samba:
+  container_name: deadline-samba
+  hostname: deadline-samba
+  image: dperson/samba
+  ports:
+    - "139:139"
+    - "445:445"
+  volumes:
+    - deadline-volume:/share
+  command: -s "DeadlineRepository8;/share;yes;no;yes;all;none;all"

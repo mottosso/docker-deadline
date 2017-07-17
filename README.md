@@ -1,10 +1,17 @@
 ### Deadline in Docker
 
-This project is based on the Running Deadline **8** in Docker [Part I](http://deadline.thinkboxsoftware.com/feature-blog/2016/12/02/running-deadline-in-containers-part-1) | [Part II](http://deadline.thinkboxsoftware.com/feature-blog/2016/12/9/running-deadline-in-containers-part-2) with the added bonus of encapsulating the entire system, including 2 slaves, via [Docker Compose](https://docs.docker.com/marcompose/overview/). Tested in [Windows](#windows) and Linux.
+A locally running render farm with Deadline.
 
 **Table of contents**
 
+- [Overview](#overview)
+- [Motivation](#motivation)
+- [Prerequsities](#prerequsities)
 - [Usage](#usage)
+	- [Step I](#step-i)
+	- [Step II](#step-ii)
+	- [Step III](#step-iii)
+- [Submitting Jobs](#submitting-jobs)
 - [Running Arbitrary Commands](#running-arbitrary-commands)
 - [Interactive Use](#interactive-use)
 - [Windows](windows)
@@ -12,15 +19,59 @@ This project is based on the Running Deadline **8** in Docker [Part I](http://de
 
 <br>
 
+### Overview
+
+This project proivides a locally running render farm with Deadline and is based on the article "*Running Deadline **8** in Docker [Part I](http://deadline.thinkboxsoftware.com/feature-blog/2016/12/02/running-deadline-in-containers-part-1) | [Part II](http://deadline.thinkboxsoftware.com/feature-blog/2016/12/9/running-deadline-in-containers-part-2)*" with the added bonus of encapsulating the entire system, including 2 slaves, via [Docker Compose](https://docs.docker.com/marcompose/overview/).
+
+Tested on [Windows](#windows) and Linux.
+
+<br>
+
+### Motivation
+
+Developing for a distributed mechanism is akin to relying on the weather - you can never be sure what's out there or for how long it'll remain. It complicates life for a fellow developer interested in putting together a pipeline involving something like Deadline.
+
+This project is meant as a local development silo for when you develop against Deadline, with the expectation that once you're finished you'll deploy into production and have things work the same, but without the uncertainty or surrounding infrastructure required to get Deadline off the ground.
+
+<br>
+
+### Prerequisities
+
+The goal of this project is to expose a private render farm for purposes of pipeline development. As such, in order to submit renders to 2 slaves running Autodesk Maya 2016, here's what (all) you need.
+
+- Docker
+- Official Deadline installer
+
+**Testing installation**
+
+This process assumes you have access to Docker via your terminal.
+
+```bash
+$ docker --version
+# Docker version 17.05.0-ce, build 89658be
+```
+
+<br>
+
 ### Usage
 
-This project assumes you have obtained the official installers for Deadline Client and Repository, files I didn't manage to find a direct download link for, even though it is free to use for 1-2 clients.
+Use consists of (1) cloning this repository, (2) installing a Docker volume for the Deadline Repository, (3) building a Deadline client container and (4) putting it all together via Docker Compose.
+
+Docker Compose is responsible for orchestrating the 5 pieces required for Deadline to function correctly and gluing them together accordingly.
+
+- mongodb
+- slave1
+- slave2
+- webservice
+- samba
+
+#### Step I
 
 ```bash
 $ git clone https://github.com/mottosso/docker-deadline.git
 ```
 
-Now put the installers into the `installers/` directory.
+Now put the official installers into the `installers/` directory.
 
 **Example**
 
@@ -31,9 +82,11 @@ docker-deadline/
     DeadlineRepository-8.0.17.2-linux-x64-installer.run
 ```
 
-> Note that this project requires version 8 of Deadline, I didn't manage to get 9 working. See below.
+> Note that this project requires version 8 of Deadline, I didn't manage to get 9 working. See [below](#deadline-9).
 
-Now we can go ahead and install.
+#### Step II
+
+Now we can go ahead and initialise the repository volume
 
 ```bash
 $ cd docker-deadline
@@ -42,23 +95,84 @@ $ ./install.sh
 
 This will install the Deadline Repository into a dedicated Docker [volume]() called `deadline-volume`. Clients are then handed this volume upon startup.
 
-Finally, the below command launches two vanilla CentOS 7 clients.
+You can check to see whether the volume was created correctly via `docker volume`.
 
 ```bash
-$ docker-compose up
+$ docker volume list
+DRIVER              VOLUME NAME
+local               deadline-volume
 ```
 
-Alternatively, run two Maya 2016 clients
+#### Step III
+
+Now let's kick things off via two machines with Maya 2016 pre-installed.
 
 ```bash
-$ docker-compose -f docker-compose-maya.yml up
+$ ./up
 ```
+
+> **Pro Tip** Keep in mind that each time you boot up Deadline, it'll produce a new instance of MongoDB which is where jobs are kept. The repository on the other hand is persistent as a [Docker Volume](). You can inspect the contents of this volume via 
+
+#### Step III
 
 At this point, you'd probably want to launch Deadline Monitor.
 
 ```bash
 $ ./deadlinemonitor.sh
 ```
+
+And you're done. See [Submitting Jobs](#submitting-jobs) for how to actually submit a job.
+
+<br>
+
+### Submitting Jobs
+
+Now that Deadline and all of its components are up and running, you're able to submit jobs to it via the [RESTful]() interface.
+
+```python
+import json
+import getpass
+import requests
+
+url = "http://localhost:8082/api/jobs"
+payload = {
+    "JobInfo": {
+        "Name": "My render",
+        "UserName": getpass.getuser(),
+        "Plugin": "MayaBatch",
+        "Frames": "1000-1003x1",
+    },
+    "PluginInfo": {
+        "SceneFile": "/share/my_file.ma",
+        "Version": "2016",
+        "OutputFilePath": "/share"
+    },
+    "AuxFiles": []
+}
+
+payload = json.dumps(payload)
+requests.post(url, data=payload)
+```
+
+> Under Docker Toolbox, you'll need to replace `localhost` with the IP to the virtual machine running your Docker Host.
+
+You'll notice I've included an example Maya file. Once submitted, the Docker slaves will produce an image much like the one below.
+
+![my_file 1000](https://user-images.githubusercontent.com/2152766/28278934-c0d036a0-6b16-11e7-8cac-28c2b32b52b4.png)
+
+<br>
+
+### Contents of Deadline Repository
+
+You can inspect the contents of the Deadline Repository via the provided Samba container.
+
+```bash
+$ ls \\<your-ip>\\DeadlineRepository8
+```
+
+It will be accessible like any other shared network folder.
+
+> **Pro Tip** If you are running Docker Toolbox, the IP is accessible via a call to `docker-machine ip`.
 
 <br>
 

@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+#
+# Copy the Deadline Repository into an internal Docker volume
+#
 docker run -ti --rm \
 	-v $(pwd)/installers:/installers \
 	-v deadline-volume:/installdir \
