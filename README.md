@@ -93,7 +93,7 @@ $ cd docker-deadline
 $ ./install.sh
 ```
 
-This will install the Deadline Repository into a dedicated Docker [volume]() called `deadline-volume`. Clients are then handed this volume upon startup.
+This will install the Deadline Repository into a dedicated Docker [volume](https://docs.docker.com/engine/tutorials/dockervolumes/) called `deadline-volume`. Clients are then handed this volume upon startup.
 
 You can check to see whether the volume was created correctly via `docker volume`.
 
@@ -127,7 +127,7 @@ And you're done. See [Submitting Jobs](#submitting-jobs) for how to actually sub
 
 ### Submitting Jobs
 
-Now that Deadline and all of its components are up and running, you're able to submit jobs to it via the [RESTful]() interface.
+Now that Deadline and all of its components are up and running, you're able to submit jobs to it via the [RESTful](https://docs.thinkboxsoftware.com/products/deadline/8.0/1_User%20Manual/manual/rest-jobs.html) interface.
 
 ```python
 import json
