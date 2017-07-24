@@ -111,7 +111,7 @@ Now let's kick things off via two machines with Maya 2016 pre-installed.
 $ ./up
 ```
 
-> **Pro Tip** Keep in mind that each time you boot up Deadline, it'll produce a new instance of MongoDB which is where jobs are kept. The repository on the other hand is persistent as a [Docker Volume](). You can inspect the contents of this volume via 
+> **Pro Tip** Keep in mind that each time you boot up Deadline, it'll produce a new instance of MongoDB which is where jobs are kept. The repository on the other hand is persistent as a [Docker Volume](). You can inspect the contents of this volume by accessing the default Samba share accessible via the IP address to the host of your container; `localhost` on Linux.
 
 #### Step III
 
