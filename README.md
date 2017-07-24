@@ -202,6 +202,16 @@ $ ./run.sh interactive bash
 
 <br>
 
+### Restarting your farm
+
+The farm typically runs at less than 1% of CPU capacity on my moderate, 5-year old laptop. You can kill it (gracefully) like this.
+
+```bash
+$ ./down.sh
+```
+
+<br>
+
 ### Windows
 
 The above assume a Linux environment. In order to run Deadline Monitor on Windows, you need a X11 server running, such as [VcXsrv][] or [Xming][].
