@@ -11,8 +11,6 @@ deadline-slave1:
   container_name: deadline-slave1
   hostname: maya-slave1
   image: '${IMAGE}'
-  environment:
-    - DISPLAY=$HOSTNAME:0
   links:
     - mongo
   volumes:

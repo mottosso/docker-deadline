@@ -204,13 +204,16 @@ $ ./run.sh interactive bash
 
 ### Windows
 
-The above assume a Linux environment. In order to run Deadline Monitor on Windows, you need a X11 server running, such as [VcXsrv](https://sourceforge.net/projects/vcxsrv/) or [Xming](https://sourceforge.net/projects/xming/).
+The above assume a Linux environment. In order to run Deadline Monitor on Windows, you need a X11 server running, such as [VcXsrv][] or [Xming][].
 
 With VcXsrv running, running `deadlinemonitor.sh` should work well with default settings. The container is being passed `$HOSTNAME` from your host to represent the name with which to connect to. If this variable isn't set, you can set it your self, either to your local hostname or IP address.
 
 ```bat
 $ set HOSTNAME=192.168.0.12
 ```
+
+[VcXsrv]: https://sourceforge.net/projects/vcxsrv/
+[Xming]: https://sourceforge.net/projects/xming/
 
 <br>
 
@@ -222,3 +225,29 @@ This project containerises Deadline 8 because of an issue with the client instal
 Error: An error occurred while trying to set the repository connection settings.
 You may have to provide them again when running the client.
 ```
+
+<br>
+
+### Troubleshooting
+
+##### Could not connect to display
+
+```bash
+$ ./deadlinemonitor
+QXcbConnection: Could not connect to display my_hostname:0
+...
+Deadline Monitor will now exit.
+```
+
+- Option A) Ensure X11 is running on your computer. Under Windows, see [VcXsrv][] or [Xming][].
+- Option B) Trade `$HOSTNAME` for your IP address in `run.sh`, sometimes Docker fails to resolve a hostname to an IP address
+
+##### Connection Refused
+
+Sometimes Deadline Monitor quits when running `docker-compose up` due to Mongo not having had enough time to initialise.
+
+```bash
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='192.168.99.100', port=8082): Max retries exceeded with url: /api/jobs
+```
+
+One solution to this is to simply bring it down, and back up again.

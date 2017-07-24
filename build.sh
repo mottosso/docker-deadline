@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker build -f maya.Dockerfile -t deadline-client-maya .
+docker build -f maya2017.Dockerfile -t deadline-client-maya2017 .
