@@ -7,8 +7,8 @@ docker run -ti --rm \
 	-v deadline-volume:/installdir \
 	-w /installers \
 	centos:7 bash -c "
-		echo Installing Deadline Repository 8.0 into deadline-volume..;\
-		./DeadlineRepository-8.*-linux-x64-installer.run \
+		echo Installing Deadline Repository into deadline-volume..;\
+		./DeadlineRepository-10.*-linux-x64-installer.run \
 	    --mode unattended \
 	    --dbhost mongo \
 	    --dbport 27017 \

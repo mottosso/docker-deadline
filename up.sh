@@ -7,9 +7,9 @@ export SHARE=$DIRNAME/share
 
 # Default image used with Docker Compose, defaults to a vanilla session
 # You can override the image by setting an environment variable.
-# $ export IMAGE=deadline-client-maya2017
+# $ export IMAGE=deadline-client-maya2018
 # $ ./up
-export IMAGE=${IMAGE:-deadline-client-maya2017}
+export IMAGE=${IMAGE:-deadline-client-maya2018}
 
 docker-compose up
 

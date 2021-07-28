@@ -7,4 +7,4 @@ docker run \
 	--name deadline-samba \
 	-v deadline-volume:/share \
 	dperson/samba \
-	    -s "DeadlineRepository8;/share;yes;no;yes;all;none;all"
+	    -s "DeadlineRepository10;/share;yes;no;yes;all;none;all"

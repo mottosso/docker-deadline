@@ -14,7 +14,7 @@ deadline-slave1:
   links:
     - mongo
   volumes:
-    - deadline-volume:/mnt/DeadlineRepository8
+    - deadline-volume:/mnt/DeadlineRepository10
     - ${SHARE}:/share
   entrypoint: ./deadlinelauncher
 
@@ -25,7 +25,7 @@ deadline-slave2:
   links:
     - mongo
   volumes:
-    - deadline-volume:/mnt/DeadlineRepository8
+    - deadline-volume:/mnt/DeadlineRepository10
     - ${SHARE}:/share
   entrypoint: ./deadlinelauncher
 
@@ -35,14 +35,14 @@ deadline-webservice:
   hostname: deadline-webservice
   image: '${IMAGE}'
   ports:
-    - "8082:8082"
+    - "8081:8081"
   links:
     - mongo
   volumes:
-    - deadline-volume:/mnt/DeadlineRepository8
+    - deadline-volume:/mnt/DeadlineRepository10
   entrypoint: ./deadlinewebservice
 
-# Expose DeadlineRepository8 as a public network share
+# Expose DeadlineRepository10 as a public network share
 deadline-samba:
   container_name: deadline-samba
   hostname: deadline-samba
@@ -52,4 +52,4 @@ deadline-samba:
     - "445:445"
   volumes:
     - deadline-volume:/share
-  command: -s "DeadlineRepository8;/share;yes;no;yes;all;none;all"
+  command: -s "DeadlineRepository10;/share;yes;no;yes;all;none;all"

@@ -78,11 +78,9 @@ Now put the official installers into the `installers/` directory.
 ```bash
 docker-deadline/
   installers/
-    DeadlineClient-8.0.17.2-linux-x64-installer.run
-    DeadlineRepository-8.0.17.2-linux-x64-installer.run
+    DeadlineClient-10.1.17.4-linux-x64-installer.run
+    DeadlineRepository-10.1.17.4-linux-x64-installer.run
 ```
-
-> Note that this project requires version 8 of Deadline, I didn't manage to get 9 working. See [below](#deadline-9).
 
 #### Step II
 
@@ -134,7 +132,7 @@ import json
 import getpass
 import requests
 
-url = "http://localhost:8082/api/jobs"
+url = "http://localhost:8081/api/jobs"
 payload = {
     "JobInfo": {
         "Name": "My render",
@@ -167,7 +165,7 @@ You'll notice I've included an example Maya file. Once submitted, the Docker sla
 You can inspect the contents of the Deadline Repository via the provided Samba container.
 
 ```bash
-$ ls \\<your-ip>\\DeadlineRepository8
+$ ls \\<your-ip>\\DeadlineRepository10
 ```
 
 It will be accessible like any other shared network folder.
@@ -224,17 +222,6 @@ $ set HOSTNAME=192.168.0.12
 
 [VcXsrv]: https://sourceforge.net/projects/vcxsrv/
 [Xming]: https://sourceforge.net/projects/xming/
-
-<br>
-
-### Deadline 9
-
-This project containerises Deadline 8 because of an issue with the client installation under 9.
-
-```bash
-Error: An error occurred while trying to set the repository connection settings.
-You may have to provide them again when running the client.
-```
 
 <br>
 
